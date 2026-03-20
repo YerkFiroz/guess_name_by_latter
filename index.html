@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Name Guess Game</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .options button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎮 Guess the Name</h1>
+
+<p id="clue"></p>
+
+<div class="options" id="options"></div>
+
+<p id="result"></p>
+
+<script>
+const names = [
+  "Ravi","Rohan","Riya","Rahul","Raj","Rohit",
+  "Aman","Amit","Ankit",
+  "Neha","Nikhil","Nisha",
+  "Kiran","Kavya","Kunal",
+  "Sita","Sneha","Suman"
+];
+
+let currentName = "";
+
+function newGame() {
+  // pick correct answer
+  currentName = names[Math.floor(Math.random() * names.length)];
+
+  let firstLetter = currentName[0];
+
+  // filter names with same starting letter
+  let sameLetterNames = names.filter(name => name[0] === firstLetter);
+
+  // ensure at least 4 options exist
+  if (sameLetterNames.length < 4) {
+    newGame();
+    return;
+  }
+
+  // pick 4 random options from same letter group
+  let options = [];
+  while (options.length < 4) {
+    let randomName = sameLetterNames[Math.floor(Math.random() * sameLetterNames.length)];
+    if (!options.includes(randomName)) {
+      options.push(randomName);
+    }
+  }
+
+  // shuffle options
+  options.sort(() => Math.random() - 0.5);
+
+  // show clue
+  let clue = currentName[0] + " _ ".repeat(currentName.length - 1);
+  document.getElementById("clue").innerText = "Clue: " + clue;
+
+  // display options
+  let html = "";
+  options.forEach(name => {
+    html += `<button onclick="checkAnswer('${name}')">${name}</button>`;
+  });
+
+  document.getElementById("options").innerHTML = html;
+}
+
+function checkAnswer(selected) {
+  if (selected === currentName) {
+    document.getElementById("result").innerText = "✅ Correct!";
+  } else {
+    document.getElementById("result").innerText = "❌ Wrong! Answer: " + currentName;
+  }
+
+  setTimeout(newGame, 1000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
